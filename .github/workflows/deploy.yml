@@ -1,0 +1,31 @@
+name: Deploy Bullion Prices
+
+on:
+  schedule:
+    - cron: '0 22 * * *'  # 9 AM AEST (UTC+11)
+  workflow_dispatch:
+  push:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Scrape prices
+        run: python3 scripts/scrape_prices.py -o data/prices.json --pretty
+
+      - name: Generate site
+        run: python3 scripts/generate_site.py -i data/prices.json -o site/index.html
+
+      - name: Deploy to Pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./site
+          publish_branch: gh-pages
