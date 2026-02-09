@@ -201,6 +201,67 @@ footer a { color: var(--gold-dim); text-decoration: none; }
 /* Metal panel visibility */
 .metal-panel { display: none; }
 .metal-panel.active { display: block; }
+
+/* Best-of section */
+.best-of-section { margin-bottom: 2rem; }
+.section-title {
+  font-size: 1.3rem; font-weight: 700; margin-bottom: 0.25rem;
+}
+.section-subtitle {
+  color: var(--text-muted); font-size: 0.85rem; margin-bottom: 1rem;
+}
+.bo-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(500px, 1fr));
+  gap: 1rem;
+}
+@media (max-width: 600px) {
+  .bo-grid { grid-template-columns: 1fr; }
+}
+.bo-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 0.75rem;
+  overflow: hidden;
+}
+.bo-header {
+  display: flex; align-items: center; gap: 0.75rem;
+  padding: 1rem;
+  border-bottom: 1px solid var(--border);
+}
+.bo-emoji { font-size: 1.8rem; flex-shrink: 0; }
+.bo-title { font-size: 1rem; font-weight: 700; margin: 0; }
+.bo-subtitle { font-size: 0.8rem; color: var(--text-muted); }
+.bo-price-box { margin-left: auto; text-align: right; }
+.bo-price { font-size: 1.2rem; font-weight: 700; color: var(--green); }
+.bo-ppo-label { font-size: 0.75rem; color: var(--text-muted); }
+.bo-save {
+  display: block; padding: 0.4rem 1rem;
+  background: var(--green-bg); color: var(--green);
+  font-size: 0.8rem; font-weight: 600;
+}
+.bo-table {
+  width: 100%; border-collapse: collapse; font-size: 0.78rem;
+}
+.bo-table thead th {
+  padding: 0.4rem 0.5rem; text-align: left;
+  font-size: 0.65rem; text-transform: uppercase;
+  letter-spacing: 0.05em; color: var(--text-muted);
+  border-bottom: 1px solid var(--border);
+  font-weight: 600; cursor: default;
+}
+.bo-table tbody tr { border-bottom: 1px solid var(--border); }
+.bo-table tbody tr:last-child { border-bottom: none; }
+.bo-table td { padding: 0.4rem 0.5rem; }
+.bo-rank { color: var(--text-muted); width: 2rem; }
+.bo-product { max-width: 220px; white-space: normal; }
+.bo-dealer { color: var(--text-muted); }
+.bo-cost { text-align: right; font-weight: 600; font-variant-numeric: tabular-nums; }
+.bo-ppo { text-align: right; font-variant-numeric: tabular-nums; color: var(--text-muted); }
+.bo-best td { background: var(--green-bg); }
+.bo-best .bo-cost { color: var(--green); }
+.bo-qty { color: var(--gold); font-weight: 700; }
+.bo-oos { color: var(--red); font-size: 0.7rem; }
 </style>
 </head>
 <body>
@@ -213,6 +274,380 @@ footer a { color: var(--gold-dim); text-decoration: none; }
 </header>
 
 <div class="container">
+  
+  <div class="best-of-section">
+    <h2 class="section-title">🏆 Today's Best Deals</h2>
+    <p class="section-subtitle">Cheapest way to buy each target weight — including fractional combos (e.g. 2×½oz). Excludes delivery.</p>
+    <div class="bo-grid">
+    <div class="bo-card" data-metal="gold">
+      <div class="bo-header">
+        <span class="bo-emoji">🥇</span>
+        <div>
+          <h3 class="bo-title">Best 1oz Gold</h3>
+          <div class="bo-subtitle">1oz The Perth Mint 1oz Gold Cast Bar — <strong>Perth Mint</strong></div>
+        </div>
+        <div class="bo-price-box">
+          <div class="bo-price">$7,267.79</div>
+          <div class="bo-ppo-label">$7,267.79/oz</div>
+        </div>
+      </div>
+      <span class="bo-save">Save $10.00 vs next best</span>
+      <table class="bo-table">
+        <thead><tr>
+          <th></th><th>Product</th><th>Dealer</th><th>Type</th><th>Total</th><th>Per oz</th>
+        </tr></thead>
+        <tbody><tr class="bo-best">
+              <td class="bo-rank">#1</td>
+              <td class="bo-product">The Perth Mint 1oz Gold Cast Bar</td>
+              <td class="bo-dealer">Perth Mint</td>
+              <td class="bo-type"><span class="badge badge-bar">Bar</span></td>
+              <td class="bo-cost">$7,267.79</td>
+              <td class="bo-ppo">$7,267.79/oz</td>
+            </tr>
+<tr>
+              <td class="bo-rank">#2</td>
+              <td class="bo-product">Kangaroo 1oz Gold Minted Bar</td>
+              <td class="bo-dealer">Perth Mint</td>
+              <td class="bo-type"><span class="badge badge-coin">Coin</span></td>
+              <td class="bo-cost">$7,277.79</td>
+              <td class="bo-ppo">$7,277.79/oz</td>
+            </tr>
+<tr>
+              <td class="bo-rank">#3</td>
+              <td class="bo-product">Lunar Horse 1oz Gold Minted Bar</td>
+              <td class="bo-dealer">Perth Mint</td>
+              <td class="bo-type"><span class="badge badge-coin">Coin</span></td>
+              <td class="bo-cost">$7,287.79</td>
+              <td class="bo-ppo">$7,287.79/oz</td>
+            </tr>
+<tr>
+              <td class="bo-rank">#4</td>
+              <td class="bo-product">Lunar Dragon 1oz Gold Minted Bar</td>
+              <td class="bo-dealer">Perth Mint</td>
+              <td class="bo-type"><span class="badge badge-coin">Coin</span></td>
+              <td class="bo-cost">$7,288.79</td>
+              <td class="bo-ppo">$7,288.79/oz</td>
+            </tr>
+<tr>
+              <td class="bo-rank">#5</td>
+              <td class="bo-product">Lunar Snake 1oz Gold Minted Bar <span class="bo-oos">(out of stock)</span></td>
+              <td class="bo-dealer">Perth Mint</td>
+              <td class="bo-type"><span class="badge badge-coin">Coin</span></td>
+              <td class="bo-cost">$7,288.79</td>
+              <td class="bo-ppo">$7,288.79/oz</td>
+            </tr>
+</tbody>
+      </table>
+    </div>
+
+    <div class="bo-card" data-metal="gold">
+      <div class="bo-header">
+        <span class="bo-emoji">🥇</span>
+        <div>
+          <h3 class="bo-title">Best 1kg Gold</h3>
+          <div class="bo-subtitle">32 × 1oz The Perth Mint 1oz Gold Cast Bar — <strong>Perth Mint</strong></div>
+        </div>
+        <div class="bo-price-box">
+          <div class="bo-price">$232,569.28</div>
+          <div class="bo-ppo-label">$7,267.79/oz</div>
+        </div>
+      </div>
+      <span class="bo-save">Save $320.00 vs next best</span>
+      <table class="bo-table">
+        <thead><tr>
+          <th></th><th>Product</th><th>Dealer</th><th>Type</th><th>Total</th><th>Per oz</th>
+        </tr></thead>
+        <tbody><tr class="bo-best">
+              <td class="bo-rank">#1</td>
+              <td class="bo-product"><span class="bo-qty">32×</span> The Perth Mint 1oz Gold Cast Bar</td>
+              <td class="bo-dealer">Perth Mint</td>
+              <td class="bo-type"><span class="badge badge-bar">Bar</span></td>
+              <td class="bo-cost">$232,569.28</td>
+              <td class="bo-ppo">$7,267.79/oz</td>
+            </tr>
+<tr>
+              <td class="bo-rank">#2</td>
+              <td class="bo-product"><span class="bo-qty">32×</span> Kangaroo 1oz Gold Minted Bar</td>
+              <td class="bo-dealer">Perth Mint</td>
+              <td class="bo-type"><span class="badge badge-coin">Coin</span></td>
+              <td class="bo-cost">$232,889.28</td>
+              <td class="bo-ppo">$7,277.79/oz</td>
+            </tr>
+<tr>
+              <td class="bo-rank">#3</td>
+              <td class="bo-product"><span class="bo-qty">32×</span> Lunar Horse 1oz Gold Minted Bar</td>
+              <td class="bo-dealer">Perth Mint</td>
+              <td class="bo-type"><span class="badge badge-coin">Coin</span></td>
+              <td class="bo-cost">$233,209.28</td>
+              <td class="bo-ppo">$7,287.79/oz</td>
+            </tr>
+<tr>
+              <td class="bo-rank">#4</td>
+              <td class="bo-product"><span class="bo-qty">32×</span> Lunar Dragon 1oz Gold Minted Bar</td>
+              <td class="bo-dealer">Perth Mint</td>
+              <td class="bo-type"><span class="badge badge-coin">Coin</span></td>
+              <td class="bo-cost">$233,241.28</td>
+              <td class="bo-ppo">$7,288.79/oz</td>
+            </tr>
+<tr>
+              <td class="bo-rank">#5</td>
+              <td class="bo-product"><span class="bo-qty">32×</span> Lunar Snake 1oz Gold Minted Bar <span class="bo-oos">(out of stock)</span></td>
+              <td class="bo-dealer">Perth Mint</td>
+              <td class="bo-type"><span class="badge badge-coin">Coin</span></td>
+              <td class="bo-cost">$233,241.28</td>
+              <td class="bo-ppo">$7,288.79/oz</td>
+            </tr>
+</tbody>
+      </table>
+    </div>
+
+    <div class="bo-card" data-metal="silver">
+      <div class="bo-header">
+        <span class="bo-emoji">🥈</span>
+        <div>
+          <h3 class="bo-title">Best 1oz Silver</h3>
+          <div class="bo-subtitle">1oz Lunar Snake 1oz Silver Minted Bars in Tube — <strong>Perth Mint</strong></div>
+        </div>
+        <div class="bo-price-box">
+          <div class="bo-price">$128.81</div>
+          <div class="bo-ppo-label">$128.81/oz</div>
+        </div>
+      </div>
+      
+      <table class="bo-table">
+        <thead><tr>
+          <th></th><th>Product</th><th>Dealer</th><th>Type</th><th>Total</th><th>Per oz</th>
+        </tr></thead>
+        <tbody><tr class="bo-best">
+              <td class="bo-rank">#1</td>
+              <td class="bo-product">Lunar Snake 1oz Silver Minted Bars in Tube <span class="bo-oos">(out of stock)</span></td>
+              <td class="bo-dealer">Perth Mint</td>
+              <td class="bo-type"><span class="badge badge-coin">Coin</span></td>
+              <td class="bo-cost">$128.81</td>
+              <td class="bo-ppo">$128.81/oz</td>
+            </tr>
+<tr>
+              <td class="bo-rank">#2</td>
+              <td class="bo-product">Australian Kangaroo 2025 1oz Silver Individual Bullion Coin <span class="bo-oos">(out of stock)</span></td>
+              <td class="bo-dealer">Perth Mint</td>
+              <td class="bo-type"><span class="badge badge-coin">Coin</span></td>
+              <td class="bo-cost">$129.31</td>
+              <td class="bo-ppo">$129.31/oz</td>
+            </tr>
+<tr>
+              <td class="bo-rank">#3</td>
+              <td class="bo-product">Australian Kangaroo 2026 1oz Silver Bullion Coins in Tube</td>
+              <td class="bo-dealer">Perth Mint</td>
+              <td class="bo-type"><span class="badge badge-coin">Coin</span></td>
+              <td class="bo-cost">$129.32</td>
+              <td class="bo-ppo">$129.32/oz</td>
+            </tr>
+<tr>
+              <td class="bo-rank">#4</td>
+              <td class="bo-product">Australian Koala 2025 1oz Silver Bullion Coin <span class="bo-oos">(out of stock)</span></td>
+              <td class="bo-dealer">Perth Mint</td>
+              <td class="bo-type"><span class="badge badge-coin">Coin</span></td>
+              <td class="bo-cost">$130.31</td>
+              <td class="bo-ppo">$130.31/oz</td>
+            </tr>
+<tr>
+              <td class="bo-rank">#5</td>
+              <td class="bo-product">Lunar Horse 2026 1oz Silver Rectangular Bullion Coins in Tube <span class="bo-oos">(out of stock)</span></td>
+              <td class="bo-dealer">Perth Mint</td>
+              <td class="bo-type"><span class="badge badge-coin">Coin</span></td>
+              <td class="bo-cost">$130.32</td>
+              <td class="bo-ppo">$130.32/oz</td>
+            </tr>
+</tbody>
+      </table>
+    </div>
+
+    <div class="bo-card" data-metal="silver">
+      <div class="bo-header">
+        <span class="bo-emoji">🥈</span>
+        <div>
+          <h3 class="bo-title">Best 10oz Silver</h3>
+          <div class="bo-subtitle">10oz Australian Kookaburra 2026 10oz Silver Bullion Coin — <strong>Perth Mint</strong></div>
+        </div>
+        <div class="bo-price-box">
+          <div class="bo-price">$1,263.23</div>
+          <div class="bo-ppo-label">$126.32/oz</div>
+        </div>
+      </div>
+      <span class="bo-save">Save $19.99 vs next best</span>
+      <table class="bo-table">
+        <thead><tr>
+          <th></th><th>Product</th><th>Dealer</th><th>Type</th><th>Total</th><th>Per oz</th>
+        </tr></thead>
+        <tbody><tr class="bo-best">
+              <td class="bo-rank">#1</td>
+              <td class="bo-product">Australian Kookaburra 2026 10oz Silver Bullion Coin <span class="bo-oos">(out of stock)</span></td>
+              <td class="bo-dealer">Perth Mint</td>
+              <td class="bo-type"><span class="badge badge-coin">Coin</span></td>
+              <td class="bo-cost">$1,263.23</td>
+              <td class="bo-ppo">$126.32/oz</td>
+            </tr>
+<tr>
+              <td class="bo-rank">#2</td>
+              <td class="bo-product"><span class="bo-qty">2×</span> Australian Lunar Series III 2026 Year of the Horse 5oz Silver Bullion Coin <span class="bo-oos">(out of stock)</span></td>
+              <td class="bo-dealer">Perth Mint</td>
+              <td class="bo-type"><span class="badge badge-coin">Coin</span></td>
+              <td class="bo-cost">$1,283.22</td>
+              <td class="bo-ppo">$128.32/oz</td>
+            </tr>
+<tr>
+              <td class="bo-rank">#3</td>
+              <td class="bo-product"><span class="bo-qty">5×</span> Australian Lunar Series III 2025 Year of the Snake 2oz Silver Bullion Coin <span class="bo-oos">(out of stock)</span></td>
+              <td class="bo-dealer">Perth Mint</td>
+              <td class="bo-type"><span class="badge badge-coin">Coin</span></td>
+              <td class="bo-cost">$1,288.10</td>
+              <td class="bo-ppo">$128.81/oz</td>
+            </tr>
+<tr>
+              <td class="bo-rank">#4</td>
+              <td class="bo-product"><span class="bo-qty">10×</span> Lunar Snake 1oz Silver Minted Bars in Tube <span class="bo-oos">(out of stock)</span></td>
+              <td class="bo-dealer">Perth Mint</td>
+              <td class="bo-type"><span class="badge badge-coin">Coin</span></td>
+              <td class="bo-cost">$1,288.10</td>
+              <td class="bo-ppo">$128.81/oz</td>
+            </tr>
+<tr>
+              <td class="bo-rank">#5</td>
+              <td class="bo-product"><span class="bo-qty">10×</span> Australian Kangaroo 2025 1oz Silver Individual Bullion Coin <span class="bo-oos">(out of stock)</span></td>
+              <td class="bo-dealer">Perth Mint</td>
+              <td class="bo-type"><span class="badge badge-coin">Coin</span></td>
+              <td class="bo-cost">$1,293.10</td>
+              <td class="bo-ppo">$129.31/oz</td>
+            </tr>
+</tbody>
+      </table>
+    </div>
+
+    <div class="bo-card" data-metal="silver">
+      <div class="bo-header">
+        <span class="bo-emoji">🥈</span>
+        <div>
+          <h3 class="bo-title">Best 1kg Silver</h3>
+          <div class="bo-subtitle">16 × 2oz Australian Lunar Series III 2025 Year of the Snake 2oz Silver Bullion Coin — <strong>Perth Mint</strong></div>
+        </div>
+        <div class="bo-price-box">
+          <div class="bo-price">$4,121.92</div>
+          <div class="bo-ppo-label">$128.81/oz</div>
+        </div>
+      </div>
+      
+      <table class="bo-table">
+        <thead><tr>
+          <th></th><th>Product</th><th>Dealer</th><th>Type</th><th>Total</th><th>Per oz</th>
+        </tr></thead>
+        <tbody><tr class="bo-best">
+              <td class="bo-rank">#1</td>
+              <td class="bo-product"><span class="bo-qty">16×</span> Australian Lunar Series III 2025 Year of the Snake 2oz Silver Bullion Coin <span class="bo-oos">(out of stock)</span></td>
+              <td class="bo-dealer">Perth Mint</td>
+              <td class="bo-type"><span class="badge badge-coin">Coin</span></td>
+              <td class="bo-cost">$4,121.92</td>
+              <td class="bo-ppo">$128.81/oz</td>
+            </tr>
+<tr>
+              <td class="bo-rank">#2</td>
+              <td class="bo-product"><span class="bo-qty">32×</span> Lunar Snake 1oz Silver Minted Bars in Tube <span class="bo-oos">(out of stock)</span></td>
+              <td class="bo-dealer">Perth Mint</td>
+              <td class="bo-type"><span class="badge badge-coin">Coin</span></td>
+              <td class="bo-cost">$4,121.92</td>
+              <td class="bo-ppo">$128.81/oz</td>
+            </tr>
+<tr>
+              <td class="bo-rank">#3</td>
+              <td class="bo-product"><span class="bo-qty">32×</span> Australian Kangaroo 2025 1oz Silver Individual Bullion Coin <span class="bo-oos">(out of stock)</span></td>
+              <td class="bo-dealer">Perth Mint</td>
+              <td class="bo-type"><span class="badge badge-coin">Coin</span></td>
+              <td class="bo-cost">$4,137.92</td>
+              <td class="bo-ppo">$129.31/oz</td>
+            </tr>
+<tr>
+              <td class="bo-rank">#4</td>
+              <td class="bo-product"><span class="bo-qty">32×</span> Australian Kangaroo 2026 1oz Silver Bullion Coins in Tube</td>
+              <td class="bo-dealer">Perth Mint</td>
+              <td class="bo-type"><span class="badge badge-coin">Coin</span></td>
+              <td class="bo-cost">$4,138.24</td>
+              <td class="bo-ppo">$129.32/oz</td>
+            </tr>
+<tr>
+              <td class="bo-rank">#5</td>
+              <td class="bo-product"><span class="bo-qty">32×</span> Australian Koala 2025 1oz Silver Bullion Coin <span class="bo-oos">(out of stock)</span></td>
+              <td class="bo-dealer">Perth Mint</td>
+              <td class="bo-type"><span class="badge badge-coin">Coin</span></td>
+              <td class="bo-cost">$4,169.92</td>
+              <td class="bo-ppo">$130.31/oz</td>
+            </tr>
+</tbody>
+      </table>
+    </div>
+
+    <div class="bo-card" data-metal="platinum">
+      <div class="bo-header">
+        <span class="bo-emoji">💎</span>
+        <div>
+          <h3 class="bo-title">Best 1oz Platinum</h3>
+          <div class="bo-subtitle">1oz Australian Kangaroo 2026 1oz Platinum Bullion Coin — <strong>Perth Mint</strong></div>
+        </div>
+        <div class="bo-price-box">
+          <div class="bo-price">$3,177.10</div>
+          <div class="bo-ppo-label">$3,177.10/oz</div>
+        </div>
+      </div>
+      <span class="bo-save">Save $1.40 vs next best</span>
+      <table class="bo-table">
+        <thead><tr>
+          <th></th><th>Product</th><th>Dealer</th><th>Type</th><th>Total</th><th>Per oz</th>
+        </tr></thead>
+        <tbody><tr class="bo-best">
+              <td class="bo-rank">#1</td>
+              <td class="bo-product">Australian Kangaroo 2026 1oz Platinum Bullion Coin</td>
+              <td class="bo-dealer">Perth Mint</td>
+              <td class="bo-type"><span class="badge badge-coin">Coin</span></td>
+              <td class="bo-cost">$3,177.10</td>
+              <td class="bo-ppo">$3,177.10/oz</td>
+            </tr>
+<tr>
+              <td class="bo-rank">#2</td>
+              <td class="bo-product">Australian Kangaroo 2025 1oz Platinum Bullion Coin <span class="bo-oos">(out of stock)</span></td>
+              <td class="bo-dealer">Perth Mint</td>
+              <td class="bo-type"><span class="badge badge-coin">Coin</span></td>
+              <td class="bo-cost">$3,178.50</td>
+              <td class="bo-ppo">$3,178.50/oz</td>
+            </tr>
+<tr>
+              <td class="bo-rank">#3</td>
+              <td class="bo-product">1oz Platinum Coin 2026 Kangaroo - Perth Mint</td>
+              <td class="bo-dealer">Ainslie Bullion</td>
+              <td class="bo-type"><span class="badge badge-coin">Coin</span></td>
+              <td class="bo-cost">$3,209.80</td>
+              <td class="bo-ppo">$3,209.80/oz</td>
+            </tr>
+<tr>
+              <td class="bo-rank">#4</td>
+              <td class="bo-product">Australian Lunar Series III 2026 Year of the Horse 1oz Platinum Bullion Coin <span class="bo-oos">(out of stock)</span></td>
+              <td class="bo-dealer">Perth Mint</td>
+              <td class="bo-type"><span class="badge badge-coin">Coin</span></td>
+              <td class="bo-cost">$3,228.50</td>
+              <td class="bo-ppo">$3,228.50/oz</td>
+            </tr>
+<tr>
+              <td class="bo-rank">#5</td>
+              <td class="bo-product">1oz Platinum Bullion Pool Allocated Platinum</td>
+              <td class="bo-dealer">ABC Bullion</td>
+              <td class="bo-type"><span class="badge badge-unallocated">Unallocated</span></td>
+              <td class="bo-cost">$3,240.60</td>
+              <td class="bo-ppo">$3,240.60/oz</td>
+            </tr>
+</tbody>
+      </table>
+    </div>
+</div>
+  </div>
+
+
   <div class="tabs">
     <button class="tab active" data-metal="gold" onclick="switchTab('gold')">Gold (166)</button>
     <button class="tab" data-metal="silver" onclick="switchTab('silver')">Silver (80)</button>

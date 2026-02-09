@@ -66,6 +66,163 @@ def type_label(t):
         'unallocated': 'Unallocated',
     }.get(t, t.title())
 
+TROY_OZ_PER_KG = 1000 / 31.1035  # ~32.1507
+
+def find_best_deals(products, metal, target_oz, label=''):
+    """
+    Find the cheapest ways to acquire target_oz of a given metal.
+    Considers both exact-weight products and fractional combos (N × smaller item).
+    Returns a list of deal options sorted by total cost.
+    """
+    metal_prods = [p for p in products if p['metal'] == metal and p.get('buy_price')]
+
+    deals = []
+
+    for p in metal_prods:
+        w = p['weight_oz']
+        if w <= 0:
+            continue
+        price = p['buy_price']
+
+        # How many of this product to reach target_oz?
+        qty = target_oz / w
+        # Only consider if it divides evenly (or very close)
+        qty_rounded = round(qty)
+        if qty_rounded < 1:
+            continue
+        # Check the weight is close enough (within 1% of target)
+        actual_oz = qty_rounded * w
+        if abs(actual_oz - target_oz) / target_oz > 0.01:
+            continue
+
+        total_cost = qty_rounded * price
+        cost_per_oz = total_cost / actual_oz
+
+        deals.append({
+            'name': p['name'],
+            'dealer': p['dealer'],
+            'dealer_id': p.get('dealer_id', ''),
+            'type': p['type'],
+            'type_label': type_label(p['type']),
+            'qty': qty_rounded,
+            'unit_weight': w,
+            'unit_weight_label': fmt_weight(w),
+            'unit_price': price,
+            'total_cost': round(total_cost, 2),
+            'actual_oz': round(actual_oz, 4),
+            'cost_per_oz': round(cost_per_oz, 2),
+            'sell_back': p.get('sell_back_price'),
+            'url': p.get('url', '#'),
+            'in_stock': p.get('in_stock', True),
+            'description': f'{qty_rounded} × {fmt_weight(w)}' if qty_rounded > 1 else fmt_weight(w),
+        })
+
+    # Sort by total cost
+    deals.sort(key=lambda d: d['total_cost'])
+    return deals
+
+
+def build_best_of_data(products):
+    """Build 'best of' summaries for key targets."""
+    targets = [
+        ('gold', 1.0, '1oz Gold'),
+        ('gold', TROY_OZ_PER_KG, '1kg Gold'),
+        ('silver', 1.0, '1oz Silver'),
+        ('silver', 10.0, '10oz Silver'),
+        ('silver', TROY_OZ_PER_KG, '1kg Silver'),
+        ('platinum', 1.0, '1oz Platinum'),
+    ]
+
+    best_of = []
+    for metal, target_oz, label in targets:
+        deals = find_best_deals(products, metal, target_oz, label)
+        if deals:
+            best_of.append({
+                'label': label,
+                'metal': metal,
+                'target_oz': target_oz,
+                'target_label': fmt_weight(target_oz),
+                'deals': deals[:5],  # Top 5 options
+            })
+    return best_of
+
+
+def generate_best_of_html(best_of_data):
+    """Generate HTML for the best-of cards section."""
+    if not best_of_data:
+        return ''
+
+    cards_html = ''
+    for section in best_of_data:
+        metal = section['metal']
+        accent = {'gold': 'var(--gold)', 'silver': 'var(--silver)', 'platinum': 'var(--platinum)'}.get(metal, 'var(--gold)')
+        emoji = {'gold': '🥇', 'silver': '🥈', 'platinum': '💎'}.get(metal, '🏆')
+
+        deals = section['deals']
+        if not deals:
+            continue
+
+        best = deals[0]
+
+        # Build the mini-table of top options
+        rows = ''
+        for i, d in enumerate(deals):
+            highlight = ' class="bo-best"' if i == 0 else ''
+            stock = '' if d['in_stock'] else ' <span class="bo-oos">(out of stock)</span>'
+            desc = d['description']
+            if d['qty'] > 1:
+                desc_html = f'<span class="bo-qty">{d["qty"]}×</span> {d["name"]}'
+            else:
+                desc_html = d['name']
+
+            rows += f'''<tr{highlight}>
+              <td class="bo-rank">#{i+1}</td>
+              <td class="bo-product">{desc_html}{stock}</td>
+              <td class="bo-dealer">{d['dealer']}</td>
+              <td class="bo-type"><span class="badge badge-{d['type'].replace('_','')}">{d['type_label']}</span></td>
+              <td class="bo-cost">{fmt_price(d['total_cost'])}</td>
+              <td class="bo-ppo">{fmt_price(d['cost_per_oz'])}/oz</td>
+            </tr>
+'''
+
+        savings = ''
+        if len(deals) > 1:
+            diff = deals[1]['total_cost'] - deals[0]['total_cost']
+            if diff > 0.5:
+                savings = f'<span class="bo-save">Save {fmt_price(diff)} vs next best</span>'
+
+        cards_html += f'''
+    <div class="bo-card" data-metal="{metal}">
+      <div class="bo-header">
+        <span class="bo-emoji">{emoji}</span>
+        <div>
+          <h3 class="bo-title">Best {section['label']}</h3>
+          <div class="bo-subtitle">{best['description']} {best['name']} — <strong>{best['dealer']}</strong></div>
+        </div>
+        <div class="bo-price-box">
+          <div class="bo-price">{fmt_price(best['total_cost'])}</div>
+          <div class="bo-ppo-label">{fmt_price(best['cost_per_oz'])}/oz</div>
+        </div>
+      </div>
+      {savings}
+      <table class="bo-table">
+        <thead><tr>
+          <th></th><th>Product</th><th>Dealer</th><th>Type</th><th>Total</th><th>Per oz</th>
+        </tr></thead>
+        <tbody>{rows}</tbody>
+      </table>
+    </div>
+'''
+
+    return f'''
+  <div class="best-of-section">
+    <h2 class="section-title">🏆 Today's Best Deals</h2>
+    <p class="section-subtitle">Cheapest way to buy each target weight — including fractional combos (e.g. 2×½oz). Excludes delivery.</p>
+    <div class="bo-grid">{cards_html}</div>
+  </div>
+'''
+
+
 def generate_html(data, output_path):
     """Generate the static HTML page."""
     products = data['products']
@@ -77,6 +234,9 @@ def generate_html(data, output_path):
         scraped_str = dt.astimezone(timezone.utc).strftime('%d %b %Y %H:%M UTC')
     except:
         scraped_str = scraped_at
+
+    # Build best-of data
+    best_of_data = build_best_of_data(products)
 
     # Group by metal
     metals = ['gold', 'silver', 'platinum']
@@ -345,6 +505,67 @@ footer a {{ color: var(--gold-dim); text-decoration: none; }}
 /* Metal panel visibility */
 .metal-panel {{ display: none; }}
 .metal-panel.active {{ display: block; }}
+
+/* Best-of section */
+.best-of-section {{ margin-bottom: 2rem; }}
+.section-title {{
+  font-size: 1.3rem; font-weight: 700; margin-bottom: 0.25rem;
+}}
+.section-subtitle {{
+  color: var(--text-muted); font-size: 0.85rem; margin-bottom: 1rem;
+}}
+.bo-grid {{
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(500px, 1fr));
+  gap: 1rem;
+}}
+@media (max-width: 600px) {{
+  .bo-grid {{ grid-template-columns: 1fr; }}
+}}
+.bo-card {{
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 0.75rem;
+  overflow: hidden;
+}}
+.bo-header {{
+  display: flex; align-items: center; gap: 0.75rem;
+  padding: 1rem;
+  border-bottom: 1px solid var(--border);
+}}
+.bo-emoji {{ font-size: 1.8rem; flex-shrink: 0; }}
+.bo-title {{ font-size: 1rem; font-weight: 700; margin: 0; }}
+.bo-subtitle {{ font-size: 0.8rem; color: var(--text-muted); }}
+.bo-price-box {{ margin-left: auto; text-align: right; }}
+.bo-price {{ font-size: 1.2rem; font-weight: 700; color: var(--green); }}
+.bo-ppo-label {{ font-size: 0.75rem; color: var(--text-muted); }}
+.bo-save {{
+  display: block; padding: 0.4rem 1rem;
+  background: var(--green-bg); color: var(--green);
+  font-size: 0.8rem; font-weight: 600;
+}}
+.bo-table {{
+  width: 100%; border-collapse: collapse; font-size: 0.78rem;
+}}
+.bo-table thead th {{
+  padding: 0.4rem 0.5rem; text-align: left;
+  font-size: 0.65rem; text-transform: uppercase;
+  letter-spacing: 0.05em; color: var(--text-muted);
+  border-bottom: 1px solid var(--border);
+  font-weight: 600; cursor: default;
+}}
+.bo-table tbody tr {{ border-bottom: 1px solid var(--border); }}
+.bo-table tbody tr:last-child {{ border-bottom: none; }}
+.bo-table td {{ padding: 0.4rem 0.5rem; }}
+.bo-rank {{ color: var(--text-muted); width: 2rem; }}
+.bo-product {{ max-width: 220px; white-space: normal; }}
+.bo-dealer {{ color: var(--text-muted); }}
+.bo-cost {{ text-align: right; font-weight: 600; font-variant-numeric: tabular-nums; }}
+.bo-ppo {{ text-align: right; font-variant-numeric: tabular-nums; color: var(--text-muted); }}
+.bo-best td {{ background: var(--green-bg); }}
+.bo-best .bo-cost {{ color: var(--green); }}
+.bo-qty {{ color: var(--gold); font-weight: 700; }}
+.bo-oos {{ color: var(--red); font-size: 0.7rem; }}
 </style>
 </head>
 <body>
@@ -357,6 +578,8 @@ footer a {{ color: var(--gold-dim); text-decoration: none; }}
 </header>
 
 <div class="container">
+  {generate_best_of_html(best_of_data)}
+
   <div class="tabs">
     <button class="tab active" data-metal="gold" onclick="switchTab('gold')">Gold ({len(metal_products['gold'])})</button>
     <button class="tab" data-metal="silver" onclick="switchTab('silver')">Silver ({len(metal_products['silver'])})</button>
