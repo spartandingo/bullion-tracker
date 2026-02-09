@@ -74,7 +74,7 @@ def find_best_deals(products, metal, target_oz, label=''):
     Considers both exact-weight products and fractional combos (N × smaller item).
     Returns a list of deal options sorted by total cost.
     """
-    metal_prods = [p for p in products if p['metal'] == metal and p.get('buy_price')]
+    metal_prods = [p for p in products if p['metal'] == metal and p.get('buy_price') and p.get('in_stock', True)]
 
     deals = []
 
