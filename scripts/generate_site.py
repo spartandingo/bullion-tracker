@@ -171,9 +171,9 @@ def generate_best_of_html(best_of_data):
             stock = '' if d['in_stock'] else ' <span class="bo-oos">(out of stock)</span>'
             desc = d['description']
             if d['qty'] > 1:
-                desc_html = f'<span class="bo-qty">{d["qty"]}×</span> {d["name"]}'
+                desc_html = f'<span class="bo-qty">{d["qty"]}×</span> <a href="{d["url"]}" target="_blank" rel="noopener">{d["name"]}</a>'
             else:
-                desc_html = d['name']
+                desc_html = f'<a href="{d["url"]}" target="_blank" rel="noopener">{d["name"]}</a>'
 
             rows += f'''<tr{highlight}>
               <td class="bo-rank">#{i+1}</td>
@@ -559,6 +559,8 @@ footer a {{ color: var(--gold-dim); text-decoration: none; }}
 .bo-table td {{ padding: 0.4rem 0.5rem; }}
 .bo-rank {{ color: var(--text-muted); width: 2rem; }}
 .bo-product {{ max-width: 220px; white-space: normal; }}
+.bo-product a {{ color: var(--blue); text-decoration: none; }}
+.bo-product a:hover {{ text-decoration: underline; }}
 .bo-dealer {{ color: var(--text-muted); }}
 .bo-cost {{ text-align: right; font-weight: 600; font-variant-numeric: tabular-nums; }}
 .bo-ppo {{ text-align: right; font-variant-numeric: tabular-nums; color: var(--text-muted); }}
@@ -615,6 +617,13 @@ footer a {{ color: var(--gold-dim); text-decoration: none; }}
         <option value="">All Weights</option>
       </select>
     </div>
+    <div class="filter-group">
+      <label>Stock</label>
+      <select id="filter-stock" onchange="applyFilters()">
+        <option value="in-stock">In Stock</option>
+        <option value="">All</option>
+      </select>
+    </div>
     <button class="btn-reset" onclick="resetFilters()">Reset</button>
   </div>
 
@@ -653,7 +662,7 @@ footer a {{ color: var(--gold-dim); text-decoration: none; }}
 
             spread_val = r['spread'] or '—'
 
-            html += f'''        <tr class="product-row{best_class}{stock_class}" data-dealer="{r['dealer']}" data-type="{r['type']}" data-weight="{r['weight_oz']}" data-buy="{r['buy_price']}" data-ppo="{r['price_per_oz'] or 0}">
+            html += f'''        <tr class="product-row{best_class}{stock_class}" data-dealer="{r['dealer']}" data-type="{r['type']}" data-weight="{r['weight_oz']}" data-buy="{r['buy_price']}" data-ppo="{r['price_per_oz'] or 0}" data-stock="{'in' if r['in_stock'] else 'out'}">
           <td class="name"><a href="{r['url']}" target="_blank" rel="noopener">{r['name']}</a></td>
           <td class="dealer">{r['dealer']}</td>
           <td><span class="badge {badge_class}">{r['type_label']}</span></td>
@@ -739,6 +748,7 @@ function applyFilters() {{
   const minPrice = parseFloat(document.getElementById('filter-min').value) || 0;
   const maxPrice = parseFloat(document.getElementById('filter-max').value) || Infinity;
   const weight = document.getElementById('filter-weight').value;
+  const stock = document.getElementById('filter-stock').value;
 
   const panel = document.getElementById('panel-' + currentMetal);
   const rows = panel.querySelectorAll('.product-row');
@@ -753,8 +763,9 @@ function applyFilters() {{
     const matchMin = price >= minPrice;
     const matchMax = price <= maxPrice;
     const matchWeight = !weight || row.dataset.weight === weight;
+    const matchStock = !stock || (stock === 'in-stock' && row.dataset.stock === 'in');
 
-    const show = matchType && matchDealer && matchMin && matchMax && matchWeight;
+    const show = matchType && matchDealer && matchMin && matchMax && matchWeight && matchStock;
     row.style.display = show ? '' : 'none';
     if (show) {{
       visible++;
@@ -782,6 +793,7 @@ function resetFilters() {{
   document.getElementById('filter-min').value = '';
   document.getElementById('filter-max').value = '';
   document.getElementById('filter-weight').value = '';
+  document.getElementById('filter-stock').value = 'in-stock';
   applyFilters();
 }}
 
