@@ -205,12 +205,14 @@ def generate_best_of_html(best_of_data):
         </div>
       </div>
       {savings}
+      <div class="bo-table-wrap">
       <table class="bo-table">
         <thead><tr>
           <th></th><th>Product</th><th>Dealer</th><th>Type</th><th>Total</th><th>Per oz</th>
         </tr></thead>
         <tbody>{rows}</tbody>
       </table>
+      </div>
     </div>
 '''
 
@@ -516,17 +518,19 @@ footer a {{ color: var(--gold-dim); text-decoration: none; }}
 }}
 .bo-grid {{
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(500px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(min(500px, 100%), 1fr));
   gap: 1rem;
-}}
-@media (max-width: 600px) {{
-  .bo-grid {{ grid-template-columns: 1fr; }}
 }}
 .bo-card {{
   background: var(--bg-card);
   border: 1px solid var(--border);
   border-radius: 0.75rem;
   overflow: hidden;
+  min-width: 0;
+}}
+.bo-table-wrap {{
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
 }}
 .bo-header {{
   display: flex; align-items: center; gap: 0.75rem;
@@ -546,6 +550,7 @@ footer a {{ color: var(--gold-dim); text-decoration: none; }}
 }}
 .bo-table {{
   width: 100%; border-collapse: collapse; font-size: 0.78rem;
+  min-width: 500px;
 }}
 .bo-table thead th {{
   padding: 0.4rem 0.5rem; text-align: left;
