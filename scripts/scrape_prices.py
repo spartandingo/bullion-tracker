@@ -72,12 +72,20 @@ def fetch_url(url, headers=None, timeout=30):
         hdrs.update(headers)
 
     req = Request(url, headers=hdrs)
-    try:
-        with urlopen(req, timeout=timeout) as resp:
-            return resp.read().decode('utf-8', errors='replace')
-    except (URLError, HTTPError) as e:
-        log.error(f"Failed to fetch {url}: {e}")
-        return None
+    retries = 3
+    for attempt in range(retries):
+        try:
+            with urlopen(req, timeout=timeout) as resp:
+                return resp.read().decode('utf-8', errors='replace')
+        except (URLError, HTTPError) as e:
+            if attempt < retries - 1:
+                wait = 2 ** (attempt + 1)
+                log.warning(f"Fetch attempt {attempt+1} failed for {url}: {e} — retrying in {wait}s")
+                import time
+                time.sleep(wait)
+            else:
+                log.error(f"Failed to fetch {url} after {retries} attempts: {e}")
+                return None
 
 
 def parse_weight_oz(name):
